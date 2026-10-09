@@ -169,7 +169,7 @@ function receipt(){
   var rc=$('#rc');rc.textContent='';
   var now=new Date();
   var ds=now.getFullYear()+'.'+String(now.getMonth()+1).padStart(2,'0')+'.'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  rc.appendChild(el('h2',null,'COMMISSION'));
+  rc.appendChild(el('h2',null,'Mirr COMMISSION'));
   rc.appendChild(el('div','c','커미션 신청 영수증'));
   rc.appendChild(el('hr','hr'));
   var r1=el('div','row');r1.appendChild(el('span',null,'신청일시'));r1.appendChild(el('span',null,ds));rc.appendChild(r1);
