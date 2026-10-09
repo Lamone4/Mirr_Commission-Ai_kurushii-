@@ -174,6 +174,7 @@ function receipt(){
   rc.appendChild(el('hr','hr'));
   var r1=el('div','row');r1.appendChild(el('span',null,'신청일시'));r1.appendChild(el('span',null,ds));rc.appendChild(r1);
   var r2=el('div','row');r2.appendChild(el('span',null,'신청자'));r2.appendChild(el('b',null,$('#fname').value.trim()));rc.appendChild(r2);
+  var r3=el('div','row');r3.appendChild(el('span',null,'상품명'));r3.appendChild(el('b',null,'아이쿠루시이❤️‍🩹'));rc.appendChild(r3);
   rc.appendChild(el('hr','hr'));
   var extra=[];
   FIELDS.forEach(function(f){
