@@ -64,6 +64,7 @@ textarea:focus,input[type=text]:focus{border-color:var(--pink)}
 <div id="receiptView" hidden>
   <div class="guide">맨 아래의 <b>이미지로 저장</b> 버튼을 눌러 저장한 뒤 메세지로 전송해주세요. 저장이 안 되면 화면에 뜨는 이미지를 길게 눌러 저장하거나 캡쳐해서 보내주시면 됩니다!</div>
   <div class="rc" id="rc"></div>
+  <div class="guide" id="after"></div>
   <button class="btn" id="save">📥 이미지로 저장 (PNG)</button>
   <button class="btn ghost" id="back" style="margin-top:10px">← 수정하기</button>
 </div>
@@ -80,7 +81,7 @@ var FIELDS=[
 {id:5,t:'5. 포즈 변경 (+15,000 P)',d:'(변경이 필요할 시 기재해주세요! 길거나 움직임이 많은 포즈는 추가금+n 혹은 거절 될 수 있습니다!) - 필요 없을 시 꼭~~!!! 비워주세요!',type:'text',photo:1},
 {id:6,t:'6. 보정 색감',d:'(기본 색상은 핑크 입니다.)',type:'text'},
 {id:7,t:'7. 샘플 공개 여부',req:1,type:'check',opts:['공개','비공개 (+ 5,000)']},
-{id:8,t:'8. 신청서 작성 후',d:'(신청이 오픈 된 후, 순서가 되어 연락을 받게 되었을 시 원활한 결제를 위해 이용하시는 커미션 플랫폼 내에서 다시 한 번 신청서를 보내주세요. 이때, 내용은 아무거나 채워주셔도 됩니다!)',type:'radio',opts:['글쿤','네']}
+{id:8,t:'신청서 작성 후',d:'(신청이 오픈 된 후, 순서가 되어 연락을 받게 되었을 시 원활한 결제를 위해 이용하시는 커미션 플랫폼 내에서 다시 한 번 신청서를 보내주세요. 이때, 내용은 아무거나 채워주셔도 됩니다!)',type:'radio',opts:['글쿤','네']}
 ];
 var photos={};
 var $=function(s){return document.querySelector(s)};
@@ -178,7 +179,7 @@ function receipt(){
   rc.appendChild(el('hr','hr'));
   var extra=[];
   FIELDS.forEach(function(f){
-    if(f.id==='name')return;
+    if(f.id==='name'||f.id===8)return;
     var it=el('div','it');it.appendChild(el('b',null,f.t));
     var v=val(f),txt=Array.isArray(v)?v.join(', '):v;
     var has=txt.length>0;
@@ -211,6 +212,12 @@ rc.appendChild(bar);
   st.style.cssText='display:block;width:52px;height:52px;margin:10px auto 0;object-fit:contain;opacity:.85';
   st.onerror=function(){st.remove()};
   rc.appendChild(st);
+
+  /* 8번: 영수증 밖 안내 박스 (저장 이미지에는 포함되지 않음) */
+  var f8=FIELDS.filter(function(x){return x.id===8})[0];
+  var a=$('#after');a.textContent='';
+  a.appendChild(el('b',null,'📌 '+f8.t));
+  a.appendChild(el('div',null,f8.d)).style.margin='6px 0 0';
 }
 build();
 var dl=null;
@@ -237,19 +244,6 @@ $('#save').onclick=function(){
   }).catch(function(){b.disabled=false;b.textContent=t;alert('이미지 생성에 실패했어요. 화면을 캡쳐해주세요.')});
 };
 try{window.claude&&claude.use('downloads').then(function(d){dl=d;if(d)$('#save').hidden=false}).catch(function(){})}catch(e){}
-$('#save').onclickOld=function(){
-  var b=$('#save');
-  if(!dl||!window.html2canvas){alert('이 환경에서는 저장이 안 돼요. 화면을 캡쳐해주세요.');return}
-  var rc=$('#rc');b.disabled=true;b.textContent='이미지 만드는 중...';
-  html2canvas(rc,{scale:2,backgroundColor:'#fdf0f4',height:rc.offsetHeight+12,useCORS:true}).then(function(cv){
-    cv.toBlob(function(blob){
-      var nm=$('#fname').value.trim().replace(/[\\\/:*?"<>|]/g,'');
-      dl.save({filename:'커미션신청서_'+nm+'.png',data:blob}).catch(function(e){
-        if(e&&e.code!=='declined')alert('저장에 실패했어요. 화면을 캡쳐해주세요.');
-      }).then(function(){b.disabled=false;b.textContent='📥 이미지로 저장 (PNG)'});
-    },'image/png');
-  }).catch(function(){b.disabled=false;b.textContent='📥 이미지로 저장 (PNG)';alert('이미지 생성에 실패했어요. 화면을 캡쳐해주세요.')});
-};
 </script>
 </body>
 </html>
